@@ -1,6 +1,11 @@
 from sklearn.model_selection import KFold
 import numpy as np
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Select task.')
+parser.add_argument('--task', type=str,  default="sentiment",
+                    help='task type (e.g. NER, sentiment, relation extraction')
 
 def split_folds(filename, outdir, folds):
     """ splits sentences in the input file into folds for training, development and testing"""
@@ -46,8 +51,17 @@ def split_folds(filename, outdir, folds):
 
 
 def main():
-    infile = "ner/zuco.ner.4eeg.5et.freq.avg.8.tsv"
-    outdir = "folds/"
+    args = parser.parse_args()
+    task = args.task
+    fp = "zuco-nlp/multi-task-learning/data"
+    if task == "sentiment":
+        sub = "/sentiment-binary"
+    elif task == "ner":
+        sub = "/ner"
+    elif task == "relext":
+        sub = "/relations"
+    infile = f"{fp + sub}/zuco.{task}.4eeg.5et.freq.avg.8.tsv"
+    outdir = f"{fp}/folds/"
 
     # Set number of folds
     folds = 5
